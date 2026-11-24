@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>lafzobymysha</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Special+Elite&display=swap" rel="stylesheet">
+<style>
+  :root{
+    /* Original deep burgundy color, slightly transparent */
+    --sheet-color: rgba(58, 8, 8, 0.90); 
+    
+    --text-main: #f4e8d9;
+    --text-muted: #c8b2a5;
+    --gold: #d4a94f;
+  }
+  *{box-sizing:border-box;}
+  
+  html, body{ 
+    margin:0; padding:0; min-height:100vh; 
+    font-family:'Cormorant Garamond', serif;
+  }
+  
+  body{
+    background-image: url('bg.jpg'); 
+    background-color: #e3d5c5;
+    background-size: cover; 
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+    padding: 30px;
+    padding-top: calc(30px + env(safe-area-inset-top, 0px));
+    padding-bottom: calc(30px + env(safe-area-inset-bottom, 0px));
+  }
+
+  /* 🎯 SUPER ROUNDED CORNERS (Capsule / Bubble style) */
+  .poem-sheet {
+    background-color: var(--sheet-color);
+    
+    /* Very subtle blur so the background texture softly blends */
+    backdrop-filter: blur(3px);
+    -webkit-backdrop-filter: blur(3px);
+    
+    border: 1px solid rgba(212, 169, 79, 0.2);
+    width: 100%;
+    max-width: 800px;
+    min-height: 85vh;
+    max-height: 95vh; 
+    overflow-y: auto; 
+    
+    padding: 50px 60px;
+    
+    /* THE FIX: Massive border-radius for that smooth circular look */
+    border-radius: 48px; 
+    
+    box-shadow: 
+      0 25px 60px rgba(0,0,0,0.7), 
+      inset 0 0 120px rgba(0,0,0,0.6); 
+      
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    color: var(--text-main);
+  }
+
+  /* Custom Scrollbar */
+  .poem-sheet::-webkit-scrollbar { width: 8px; }
+  .poem-sheet::-webkit-scrollbar-track { background: transparent; }
+  .poem-sheet::-webkit-scrollbar-thumb { background: rgba(212, 169, 79, 0.3); border-radius: 10px; }
+
+  /* Subtle texture overlay */
+  .poem-sheet::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(45deg, rgba(255,255,255,0.01) 0px, transparent 2px, transparent 4px);
+    pointer-events: none;
+    border-radius: 48px; /* Matches parent */
+  }
+
+  .brand {
+    text-align: center;
+    font-style: italic;
+    font-size: 1.8rem;
+    color: var(--gold);
+    margin-bottom: 30px;
+    letter-spacing: 1px;
+    opacity: 0.9;
+    text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+  }
+
+  .controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid rgba(212, 169, 79, 0.2);
+    z-index: 2;
+  }
+
+  select {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    font-family: 'Special Elite', serif;
+    font-size: 1rem;
+    cursor: pointer;
+    outline: none;
+    -webkit-appearance: none;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  select option { background: #2a0505; color: var(--text-main); }
+
+  .lang-switch {
+    display: flex;
+    gap: 15px;
+    font-family: 'Special Elite', serif;
+    font-size: 0.95rem;
+    letter-spacing: 1px;
+  }
+  .lang-switch span {
+    color: rgba(244, 232, 217, 0.3);
+    cursor: pointer;
+    transition: color 0.3s;
+  }
+  .lang-switch span.active {
+    color: var(--gold);
+    border-bottom: 1px solid var(--gold);
+  }
+
+  /* Poem Area */
+  .poem-area {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+    padding: 20px 0;
+    z-index: 2;
+    font-size: 1.4rem;
+    line-height: 2;
+    white-space: pre-line;
+    animation: fadeIn 0.6s ease;
+    
+    text-shadow: 0 2px 4px rgba(0,0,0,0.8); 
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .poem-title {
+    color: var(--gold);
+    font-size: 1.2rem;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    font-family: 'Special Elite', serif;
+    margin-bottom: 25px;
+    display: block;
+  }
+
+  .poem-area .byline {
+    margin-top: 35px;
+    font-style: italic;
+    color: var(--gold);
+    font-size: 1.2rem;
+    opacity: 0.8;
+  }
+
+  /* Action Area */
+  .action-area {
+    text-align: center;
+    margin-top: 20px;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+  }
+
+  /* Pill shaped button */
+  .gen-btn {
+    background: transparent;
+    border: 1px solid rgba(212, 169, 79, 0.4);
+    color: var(--gold);
+    padding: 14px 40px;
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 1.3rem;
+    border-radius: 50px; /* Pill shape */
+    cursor: pointer;
+    transition: all 0.3s ease;
+    letter-spacing: 1px;
+    width: 100%;
+    max-width: 300px;
+  }
+
+  .gen-btn:hover {
+    background: rgba(212, 169, 79, 0.1);
+    border-color: var(--gold);
+    transform: translateY(-2px);
+  }
+  
+  .gen-btn:active { transform: translateY(0); }
+
+  .famous-link {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: color 0.3s;
+    opacity: 0.7;
+    text-decoration: underline;
+    text-decoration-color: transparent;
+  }
+
+  .famous-link:hover {
+    color: var(--gold);
+    opacity: 1;
+    text-decoration-color: var(--gold);
+  }
+
+  .copy-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    font-family: 'Special Elite', serif;
+    font-size: 0.8rem;
+    cursor: pointer;
+    opacity: 0.5;
+    transition: opacity 0.2s;
+    margin-top: 10px;
+    display: none;
+  }
+  .copy-btn:hover { opacity: 1; color: var(--gold); }
+
+  /* 📱 Mobile Adjustments */
+  @media (max-width: 768px) {
+    body { padding: 15px; }
+    .poem-sheet { 
+      max-width: 100%; 
+      min-height: 85vh; 
+      padding: 30px 20px; 
+      /* Still very round on mobile, but fits the screen better */
+      border-radius: 32px; 
+      background-color: rgba(58, 8, 8, 0.93);
+    }
+    .poem-sheet::before { border-radius: 32px; }
+    .poem-area { font-size: 1.15rem; line-height: 1.8; }
+    .brand { font-size: 1.4rem; margin-bottom: 20px; }
+    .gen-btn { font-size: 1.1rem; padding: 12px 25px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="poem-sheet">
+  
+  <div class="brand">lafzobymysha</div>
+
+  <div class="controls">
+    <select id="genre">
+      <option value="romance">Romance</option>
+      <option value="heartbreak">Heartbreak</option>
+      <option value="loneliness">Loneliness</option>
+      <option value="hope">Hope</option>
+      <option value="nostalgia">Nostalgia</option>
+      <option value="nature">Nature</option>
+      <option value="joy">Joy</option>
+    </select>
+
+    <div class="lang-switch" id="langSwitch">
+      <span class="active" data-lang="hi">Hinglish</span>
+      <span data-lang="en">English</span>
+    </div>
+  </div>
+
+  <div class="poem-area" id="poemArea">
+    <div>loading...</div>
+  </div>
+
+  <div class="action-area">
+    <button class="gen-btn" id="genBtn">reveal a poem</button>
+    <button class="famous-link" id="famousBtn">or read a famous classic</button>
+    <button class="copy-btn" id="copyBtn">copy to clipboard</button>
+  </div>
+
+</div>
+
+<script>
+/* ============================================================
+   MASSIVE DATA: LOCAL GENERATOR
+   ============================================================ */
+const DATA_EN = {
+  romance: { nouns: ["moonlight","your name","the space between us","an unsent message","the kitchen light","the last train","a song we ruined","the quiet after","a touch","a whispered promise","the first hello","a shared umbrella"], adjs: ["soft","reckless","golden","unfinished","tender","half-lit","impossible","ordinary","bittersweet","electric","familiar","fleeting"], gerunds: ["waiting","burning","unravelling","staying","aching","blooming","holding on","falling","dreaming","remembering","yielding","praying"], places: ["the hallway","your doorway","the passenger seat","a stranger's kitchen","the back of my throat","the edge of the bed","a crowded room","the back seat of a cab"], closers: ["and still i leave the light on","i would do it again, badly","love is just attention, paid on time","we were always a nearly","and i am learning to let you go","the universe conspired, briefly"] },
+  loneliness: { nouns: ["the empty chair","a second cup","the hum of the fridge","my own voice","the long hallway","an unanswered call","the ceiling","a door left open","the ticking clock","a ghost"], adjs: ["quiet","unbearable","ordinary","hollow","cold","familiar","unbothered","heavy","endless","silent","gray"], gerunds: ["waiting","listening","pacing","pretending","sitting still","counting hours","staring at walls","forgetting how to speak"], places: ["this room","the kitchen at 3am","the passenger seat","the stairs","the space beside me","the bottom of a bottle","the edge of the crowd"], closers: ["and the night keeps its mouth shut","nobody calls, and i answer anyway","the silence and i have made peace","echoes are the only company left","i am the only one here"] },
+  heartbreak: { nouns: ["the last text","a borrowed sweater","the song we ruined","your side of the bed","the photograph","a name i still say","the slammed door","a broken promise"], adjs: ["sharp","unfinished","stupid","tender","final","quiet","shattered","hollow","cruel","numb"], gerunds: ["forgetting","rehearsing","deleting","missing","letting go","replaying","crying","breaking","healing"], places: ["the doorway","the group chat","the back seat","my own head","the corner where we met","the bottom of my chest"], closers: ["grief is just love with nowhere to go","i hope it was worth the silence","i am learning to be a whole person again","the pieces don't fit anymore","i am slowly bleeding out"] },
+  hope: { nouns: ["morning","a green shoot","the first warm day","an open window","bread rising","a stranger's smile","a second chance","a new dawn"], adjs: ["small","stubborn","slow","golden","possible","new","bright","gentle","fragile"], gerunds: ["beginning","trying again","breathing","opening","reaching","growing","healing","believing"], places: ["the kitchen","the front step","behind my ribs","the far end of winter","the bus stop","tomorrow's light"], closers: ["and the sun, damn it, keeps coming up","i am not done yet","something in me is still green","the dawn always breaks","we will be okay"] },
+  nostalgia: { nouns: ["the old house","a cassette tape","summer 2009","my grandmother's hands","a bicycle","the school yard","a faded photograph","an old friend"], adjs: ["golden","distant","unfiltered","gone","warm","dimmer","faded","sepia","sweet"], gerunds: ["remembering","rewinding","longing","holding on","smelling rain","looking back","wishing"], places: ["the back garden","the passenger seat","my childhood street","the kitchen of that house","the old playground"], closers: ["everything was always about to end","i keep the past in a drawer and visit","we were so young it was embarrassing","the ghosts of who we were","time is a thief"] },
+  nature: { nouns: ["the river","a crow","wet moss","the mountain","a fox","the tide","pine needles","the storm","a wildflower"], adjs: ["green","ancient","quiet","wild","salted","slow","untamed","vast","still"], gerunds: ["growing","returning","flowing","rotting","blooming","hunting","breathing","watching"], places: ["the treeline","the riverbank","the ridge","the shallows","under the ferns","the eye of the storm","the deep woods"], closers: ["the forest does not miss me","everything here knows what it is","and i am allowed to just be an animal","nature takes its course","the earth keeps spinning"] },
+  joy: { nouns: ["a full table","the first bite","bare feet","a dog in the hallway","cheap wine","a good song","a loud laugh","sunlight"], adjs: ["loud","bright","silly","warm","unearned","sweet","radiant","alive"], gerunds: ["laughing","dancing badly","singing wrong","spinning","spilling","celebrating","shining"], places: ["the kitchen","the front yard","the middle of the road","the dance floor","the heart of the city"], closers: ["and this, this is enough","i want to live here forever","the world, briefly, says yes","happiness is a choice","i am exactly where i need to be"] }
+};
+
+const DATA_HI = {
+  romance: { nouns: ["chandni","tumhara naam","hamare beech ki jagah","ek unsent message","kitchen ki light","aakhri train","woh gaana jo humne bigaada","tumhare baad ki khamoshi","ek ehsaas","pehli mulaqat"], adjs: ["haseen","betaab","sunehri","adhura","naram","aadhi raat ka","namumkin","aam","meetha","pagal"], gerunds: ["intezaar","yaad","pyaar","gila","shikwa","umeed","bekhudi","deewanapan"], places: ["hallway","tumhare darwaze","passenger seat","ajnabi ki kitchen","mere gale ke andar","dil ke kisi kone mein"], closers: ["aur phir bhi main light on chhodta hoon","main phir se karunga, galat hi sahi","pyaar bas dhyan hai, time par diya hua","tumhare baad sab adhura hai","ishq mein sab jaayaz hai"] },
+  loneliness: { nouns: ["khali chair","doosra cup","fridge ki hum","meri apni awaaz","lamba hallway","unanswered call","ceiling","khula darwaza","tanha raatein"], adjs: ["khamosh","behad","aam","suna","thanda","jaana-pehchana","unbothered","udaas","veeran"], gerunds: ["intezaar","yaad","gila","shikwa","umeed","rona","tanhai"], places: ["yeh kamra","3 baje ki kitchen","passenger seat","seedhiyan","mere bagal ki jagah","is bheed mein"], closers: ["aur raat apna muh band rakhti hai","koi call nahi karta, aur main phir bhi uthata hoon","khamoshi aur maine sulah kar li hai","meri tanhai mera ghar hai","khud se baatein karna aadat ho gayi hai"] },
+  heartbreak: { nouns: ["aakhri text","udhaar ka sweater","woh gaana jo humne bigaada","tumhari side ka bistar","tasveer","ek naam jo main abhi bhi leta hoon","toota hua dil","dhoka"], adjs: ["tez","adhura","bewakoof","naram","aakhri","khamosh","zakham","bikhra hua"], gerunds: ["bhoolna","yaad","intezaar","gila","shikwa","rona","seeking closure"], places: ["darwaza","group chat","back seat","mera apna dimaag","woh corner jahan hum mile the","yaadon ke kabristan mein"], closers: ["grief bas pyaar hai jiske paas jaane ki jagah nahi","umeed hai khamoshi ke laayak tha","main phir se poora insaan banna seekh raha hoon","tumhari yaadein zeher hain","ab kuch bhi pehle jaisa nahi hoga"] },
+  hope: { nouns: ["subah","hari kopal","pehla garam din","khuli khidki","uthi hui roti","ajnabi ki muskaan","naya savera","roshni"], adjs: ["chhota","ziddi","dheema","sunehri","mumkin","naya","chamakta","ummmed bhara"], gerunds: ["shuruaat","koshish","saans","umeed","khilna","jeena","aage badhna"], places: ["kitchen","seedhi","mere pasliyon ke peeche","sardi ke aakhri kinare","bus stop","kal ke sapno mein"], closers: ["aur sooraj, yaar, upar aata rehta hai","main abhi khatam nahi hua","mere andar kuch abhi bhi hara hai","harega nahi, bas thoda thak gaya hoon","sab theek ho jayega"] },
+  nostalgia: { nouns: ["purana ghar","cassette tape","summer 2009","nani ke haath","cycle","school ka maidan","bachpan","purani chitthiyan"], adjs: ["sunehri","door","unfiltered","gaya hua","garam","dhundhla","yaadgaar","purana"], gerunds: ["yaad","intezaar","gila","umeed","pachhtaana","yaadon mein khona"], places: ["peeche ka bagicha","passenger seat","bachpan ki gali","us ghar ki kitchen","tasveeron mein"], closers: ["sab kuch hamesha khatam hone wala tha","main past ko drawer mein rakhta hoon aur milne jaata hoon","hum itne young the ki embarrassing tha","woh din yaad aate hain","waqt kahan rukta hai"] },
+  nature: { nouns: ["nadi","kawwa","geeli kaai","pahaad","lomdi","lehar","cheed ke patte","toofan","phool"], adjs: ["hara","purana","khamosh","jungli","namkeen","dheema","azaad","shaant"], gerunds: ["badhna","lautna","behna","sadna","khilna","shikaar","ugna","bikhar.na"], places: ["pedon ki line","nadi ka kinara","pahaad ki choti","paani ke chhichhle","fern ke neeche","khule aasman ke neeche"], closers: ["jungle mujhe miss nahi karta","yahan sab jaanta hai ki woh kya hai","aur mujhe bas ek jaanwar hone ki ijazat hai","fitrat apna kaam karti hai","kudrat ke aage koi nahi"] },
+  joy: { nouns: ["bhara hua table","pehla nivala","nange pair","hallway mein kutta","sasti wine","ek achha gaana","hansi","dhoop"], adjs: ["tez","chamakta","bewakoof","garam","bina wajah","meetha","khushnuma","zinda"], gerunds: ["hasna","naachna","gaana","ghoomna","girna","jeena","celebrate karna"], places: ["kitchen","aage ka aangan","sadak ke beech","dance floor","doston ke beech"], closers: ["aur yeh, yeh kaafi hai","main yahan hamesha rehna chahta hoon","duniya, thodi der ke liye, haan kehti hai","khushi chhoti chhoti cheezon mein hai","aaj toh bas jee lo"] }
+};
+
+const TEMPLATES_EN = ["{adj} {noun} in {place}","i am still {gerund} in {place}","{noun}, {adj} as {noun}","nothing {adj} is left — only {noun}","some nights {noun} feels {adj}","{gerund}, {gerund}, {gerund} — like {noun}","let me be {adj} about {noun}","you were the {adj} {noun} i never learned to hold","there is {noun} in {place} tonight","and i keep {gerund} in {place}","{adj}, {adj}, and gone — that was {noun}","tell me again how {noun} was supposed to be {adj}","i have been {adj} since {noun}","{noun} is just {noun} with better lighting","a {adj} {noun} haunts {place}","what if we just {gerund}?","between {noun} and {noun}","the {noun} left in {place}"];
+const TEMPLATES_HI = ["{adj} {noun} {place} mein","main abhi bhi {place} mein {gerund} karta hoon","{noun}, {adj} jaise {noun}","kuch {adj} nahi bacha — sirf {noun}","kuch raatein {noun} {adj} lagti hai","{gerund}, {gerund}, {gerund} — jaise {noun}","mujhe {noun} par {adj} hone do","tum woh {adj} {noun} the jo main kabhi thaam na saka","aaj raat {place} mein {noun} hai","aur main {place} mein {gerund} karta rehta hoon","{adj}, {adj}, aur gayab — wahi {noun} tha","phir se batao {noun} {adj} kaise hona tha","main {noun} se {adj} hoon","{noun} bas {noun} hai, thodi better lighting ke saath","{place} mein ek {adj} {noun} hai","kya hota agar hum {gerund} karte?","{noun} aur {noun} ke beech","{place} mein chhoda hua {noun}"];
+
+/* ============================================================
+   MASSIVE DATA: FAMOUS CLASSICS
+   ============================================================ */
+const FAMOUS = {
+  romance: [
+    { title:"Sonnet 18", author:"William Shakespeare", lines:`Shall I compare thee to a summer's day?\nThou art more lovely and more temperate:\nRough winds do shake the darling buds of May,\nAnd summer's lease hath all too short a date;\nSometime too hot the eye of heaven shines,\nAnd often is his gold complexion dimm'd;\nAnd every fair from fair sometime declines,\nBy chance or nature's changing course untrimm'd;\nBut thy eternal summer shall not fade,\nNor lose possession of that fair thou ow'st;\nNor shall death brag thou wander'st in his shade,\nWhen in eternal lines to time thou grow'st:\nSo long as men can breathe or eyes can see,\nSo long lives this, and this gives life to thee.` },
+    { title:"How Do I Love Thee?", author:"Elizabeth Barrett Browning", lines:`How do I love thee? Let me count the ways.\nI love thee to the depth and breadth and height\nMy soul can reach, when feeling out of sight\nFor the ends of being and ideal grace.\nI love thee to the level of every day's\nMost quiet need, by sun and candle-light.\nI love thee freely, as men strive for right.\nI love thee purely, as they turn from praise.\nI love thee with the passion put to use\nIn my old griefs, and with my childhood's faith.\nI love thee with a love I seemed to lose\nWith my lost saints. I love thee with the breath,\nSmiles, tears, of all my life; and, if God choose,\nI shall but love thee better after death.` },
+    { title:"She Walks in Beauty", author:"Lord Byron", lines:`She walks in beauty, like the night\nOf cloudless climes and starry skies;\nAnd all that's best of dark and bright\nMeet in her aspect and her eyes;\nThus mellowed to that tender light\nWhich heaven to gaudy day denies.` },
+    { title:"Love", author:"Percy Bysshe Shelley", lines:`The fountains mingle with the river\nAnd the rivers with the ocean,\nThe winds of heaven mix for ever\nWith a sweet emotion;\nNothing in the world is single,\nAll things by a law divine\nIn one another's being mingle—\nWhy not I with thine?` }
+  ],
+  loneliness: [
+    { title:"Acquainted with the Night", author:"Robert Frost", lines:`I have been one acquainted with the night.\nI have walked out in rain—and back in rain.\nI have outwalked the furthest city light.\nI have looked down the saddest city lane.\nI have passed by the watchman on his beat\nAnd dropped my eyes, unwilling to explain.\nI have stood still and stopped the sound of feet\nWhen far away an interrupted cry\nCame over houses from another street,\nBut not to call me back or say good-bye;\nAnd further still at an unearthly height,\nOne luminary clock against the sky\nProclaimed the time was neither wrong nor right.\nI have been one acquainted with the night.` },
+    { title:"Alone", author:"Edgar Allan Poe", lines:`From childhood's hour I have not been\nAs others were—I have not seen\nAs others saw—I could not bring\nMy passions from a common spring—\nFrom the same source I have not taken\nMy sorrow—I could not awaken\nMy heart to joy at the same tone—\nAnd all I lov'd—I lov'd alone.` },
+    { title:"What Lips My Lips Have Kissed", author:"Edna St. Vincent Millay", lines:`What lips my lips have kissed, and where, and why,\nI have forgotten, and what arms have lain\nUnder my head till morning; but the rain\nIs full of ghosts tonight, that tap and sigh\nUpon the glass and listen for reply,\nAnd in my heart there stirs a quiet pain\nFor unremembered lads that not again\nWill turn to me at midnight with a cry.\nThus in the winter stands the lonely tree,\nNor knows what birds have vanished one by one,\nYet knows its boughs more silent than before:\nI cannot say what loves have come and gone,\nI only know that summer sang in me\nA little while, that in me sings no more.` }
+  ],
+  heartbreak: [
+    { title:"Never Give All the Heart", author:"W.B. Yeats", lines:`Never give all the heart, for love\nWill hardly seem worth thinking of\nTo passionate women if it seem\nCertain, and they never dream\nThat it fades out from kiss to kiss;\nFor everything that's lovely is\nBut a brief, dreamy, kind delight.\nO never give the heart outright,\nFor they, for all smooth lips can say,\nHave given their hearts up to the play.\nAnd who could play it well enough\nIf deaf and dumb and blind with love?\nHe that made this knows all the cost,\nFor he gave all his heart and lost.` },
+    { title:"When We Two Parted", author:"Lord Byron", lines:`When we two parted\nIn silence and tears,\nHalf broken-hearted\nTo sever for years,\nPale grew thy cheek and cold,\nColder thy kiss;\nTruly that hour foretold\nSorrow to this.` },
+    { title:"A Poison Tree", author:"William Blake", lines:`I was angry with my friend:\nI told my wrath, my wrath did end.\nI was angry with my foe:\nI told it not, my wrath did grow.\n\nAnd I watered it in fears\nNight and morning with my tears,\nAnd I sunned it with smiles\nAnd with soft deceitful wiles.` }
+  ],
+  hope: [
+    { title:"“Hope” is the thing with feathers", author:"Emily Dickinson", lines:`“Hope” is the thing with feathers —\nThat perches in the soul —\nAnd sings the tune without the words —\nAnd never stops — at all —\n\nAnd sweetest — in the Gale — is heard —\nAnd sore must be the storm —\nThat could abash the little Bird\nThat kept so many warm —` },
+    { title:"Ozymandias", author:"Percy Bysshe Shelley", lines:`I met a traveller from an antique land,\nWho said—“Two vast and trunkless legs of stone\nStand in the desert. . . . Near them, on the sand,\nHalf sunk a shattered visage lies, whose frown,\nAnd wrinkled lip, and sneer of cold command,\nTell that its sculptor well those passions read\nWhich yet survive, stamped on these lifeless things,\nThe hand that mocked them, and the heart that fed;\nAnd on the pedestal, these words appear:\nMy name is Ozymandias, King of Kings;\nLook on my Works, ye Mighty, and despair!\nNothing beside remains. Round the decay\nOf that colossal Wreck, boundless and bare\nThe lone and level sands stretch far away.”` },
+    { title:"Still I Rise (Excerpt)", author:"Maya Angelou", lines:`You may write me down in history\nWith your bitter, twisted lies,\nYou may trod me in the very dirt\nBut still, like dust, I'll rise.\n\nDoes my sassiness upset you?\nWhy are you beset with gloom?\n’Cause I walk like I've got oil wells\nPumping in my living room.` }
+  ],
+  nostalgia: [
+    { title:"My Childhood Home I See Again", author:"Abraham Lincoln", lines:`My childhood home I see again,\nAnd sadden with the view;\nAnd still, as memory crowds my brain,\nThere's pleasure in it too.\nO Memory! thou midway world\n'Twixt earth and paradise,\nWhere things decayed and loved ones lost\nIn dreamy shadows rise.` },
+    { title:"The Road Not Taken", author:"Robert Frost", lines:`Two roads diverged in a yellow wood,\nAnd sorry I could not travel both\nAnd be one traveler, long I stood\nAnd looked down one as far as I could\nTo where it bent in the undergrowth;\n\nThen took the other, as just as fair,\nAnd having perhaps the better claim,\nBecause it was grassy and wanted wear;\nThough as for that the passing there\nHad worn them really about the same,\n\nAnd both that morning equally lay\nIn leaves no step had trodden black.\nOh, I kept the first for another day!\nYet knowing how way leads on to way,\nI doubted if I should ever come back.\n\nI shall be telling this with a sigh\nSomewhere ages and ages hence:\nTwo roads diverged in a wood, and I—\nI took the one less traveled by,\nAnd that has made all the difference.` },
+    { title:"Auld Lang Syne", author:"Robert Burns", lines:`Should auld acquaintance be forgot,\nand never brought to mind?\nShould auld acquaintance be forgot,\nand auld lang syne?\nFor auld lang syne, my dear,\nfor auld lang syne,\nwe'll tak' a cup o' kindness yet,\nfor auld lang syne.` }
+  ],
+  nature: [
+    { title:"I Wandered Lonely as a Cloud", author:"William Wordsworth", lines:`I wandered lonely as a cloud\nThat floats on high o'er vales and hills,\nWhen all at once I saw a crowd,\nA host, of golden daffodils;\nBeside the lake, beneath the trees,\nFluttering and dancing in the breeze.` },
+    { title:"Stopping by Woods on a Snowy Evening", author:"Robert Frost", lines:`Whose woods these are I think I know.\nHis house is in the village though;\nHe will not see me stopping here\nTo watch his woods fill up with snow.\n\nMy little horse must think it queer\nTo stop without a farmhouse near\nBetween the woods and frozen lake\nThe darkest evening of the year.\n\nHe gives his harness bells a shake\nTo ask if there is some mistake.\nThe only other sound’s the sweep\nOf easy wind and downy flake.\n\nThe woods are lovely, dark and deep,\nBut I have promises to keep,\nAnd miles to go before I sleep,\nAnd miles to go before I sleep.` },
+    { title:"The Tyger", author:"William Blake", lines:`Tyger Tyger, burning bright,\nIn the forests of the night;\nWhat immortal hand or eye,\nCould frame thy fearful symmetry?\n\nIn what distant deeps or skies.\nBurnt the fire of thine eyes?\nOn what wings dare he aspire?\nWhat the hand, dare seize the fire?` }
+  ],
+  joy: [
+    { title:"Endymion (extract)", author:"John Keats", lines:`A thing of beauty is a joy for ever:\nIts loveliness increases; it will never\nPass into nothingness; but still will keep\nA bower quiet for us, and a sleep\nFull of sweet dreams, and health, and quiet breathing.` },
+    { title:"I Hear America Singing", author:"Walt Whitman", lines:`I hear America singing, the varied carols I hear,\nThose of mechanics, each one singing his as it should be blithe and strong,\nThe carpenter singing his as he measures his plank or beam,\nThe mason singing his as he makes ready for work, or leaves off work,\nThe boatman singing what belongs to him in his boat, the deckhand singing on the steamboat deck,\nThe shoemaker singing as he sits on his bench, the hatter singing as he stands,\nThe wood-cutter's song, the ploughboy's on his way in the morning, or at noon intermission or at sundown,\nThe delicious singing of the mother, or of the young wife at work, or of the girl sewing or washing,\nEach singing what belongs to him or her and to none else,\nThe day what belongs to the day—at night the party of young fellows, robust, friendly,\nSinging with open mouths their strong melodious songs.` }
+  ]
+};
+
+const pick = a => a[Math.floor(Math.random() * a.length)];
+function makePicker(list){
+  let pool = [];
+  return () => { if (!pool.length) pool = [...list].sort(() => Math.random() - 0.5); return pool.pop(); };
+}
+
+function generateLocalPoem(topicKey, lang){
+  const DATA = lang === "hi" ? DATA_HI : DATA_EN;
+  const TEMPLATES = lang === "hi" ? TEMPLATES_HI : TEMPLATES_EN;
+  const t = DATA[topicKey];
+  const bank = { noun: makePicker(t.nouns), adj: makePicker(t.adjs), gerund: makePicker(t.gerunds), place: makePicker(t.places) };
+  const fill = tpl => tpl.replace(/\{(\w+)\}/g, (_, k) => bank[k] ? bank[k]() : _);
+  
+  const stanzas = [];
+  for (let s = 0; s < 3; s++){
+    const lines = [];
+    const count = 2 + (Math.random() < 0.5 ? 0 : 1);
+    for (let l = 0; l < count; l++){ lines.push(fill(pick(TEMPLATES))); }
+    stanzas.push(lines.join("\n"));
+  }
+  return stanzas.join("\n\n") + "\n\n" + fill(pick(t.closers));
+}
+
+/* UI Logic */
+let currentLang = "hi";
+const $langSwitch = document.getElementById("langSwitch");
+const $poemArea = document.getElementById("poemArea");
+const $genBtn = document.getElementById("genBtn");
+const $famousBtn = document.getElementById("famousBtn");
+const $copyBtn = document.getElementById("copyBtn");
+const $genre = document.getElementById("genre");
+
+$langSwitch.addEventListener("click", function(e){
+  if(e.target.tagName !== "SPAN") return;
+  $langSwitch.querySelectorAll("span").forEach(s => s.classList.remove("active"));
+  e.target.classList.add("active");
+  currentLang = e.target.dataset.lang;
+});
+
+function displayResult(htmlContent, textToCopy) {
+  $poemArea.style.opacity = 0;
+  $copyBtn.style.display = "none";
+  
+  setTimeout(() => {
+    $poemArea.innerHTML = htmlContent;
+    $poemArea.style.transition = "opacity 0.6s ease";
+    $poemArea.style.opacity = 1;
+    $copyBtn.style.display = "inline-block";
+    
+    $copyBtn.onclick = async function(){
+      try {
+        await navigator.clipboard.writeText(textToCopy);
+        this.textContent = "copied!";
+        setTimeout(() => this.textContent = "copy to clipboard", 2000);
+      } catch (err) { this.textContent = "error"; }
+    };
+  }, 300); 
+}
+
+// Generate My Poem (Local)
+$genBtn.addEventListener("click", function(){
+  const topic = $genre.value;
+  const poemText = generateLocalPoem(topic, currentLang);
+  
+  const html = `
+    ${poemText}
+    <div class="byline">&mdash; Mysha</div>
+  `;
+  displayResult(html, poemText + "\n\n— Mysha");
+});
+
+// Generate Famous Poem
+$famousBtn.addEventListener("click", function(){
+  const topic = $genre.value;
+  const poem = pick(FAMOUS[topic]);
+  
+  const html = `
+    <span class="poem-title">${poem.title}</span>
+    ${poem.lines}
+    <div class="byline">&mdash; ${poem.author}</div>
+  `;
+  displayResult(html, `${poem.title}\nby ${poem.author}\n\n${poem.lines}`);
+});
+
+// Generate automatically on load
+window.addEventListener('DOMContentLoaded', () => { $genBtn.click(); });
+</script>
+</body>
+</html>
