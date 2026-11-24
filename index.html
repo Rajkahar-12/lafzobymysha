@@ -9,9 +9,9 @@
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Special+Elite&display=swap" rel="stylesheet">
 <style>
   :root{
-    /* Original deep burgundy color, slightly transparent */
-    --sheet-color: rgba(58, 8, 8, 0.92); 
-    
+    /* 🎯 OPACITY SET TO 55% */
+    --glass-bg: rgba(58, 8, 8, 0.55); 
+    --glass-border: rgba(212, 169, 79, 0.25);
     --text-main: #f4e8d9;
     --text-muted: #c8b2a5;
     --gold: #d4a94f;
@@ -35,73 +35,63 @@
     justify-content: center;
     align-items: center;
     
-    padding: 30px;
-    padding-top: calc(30px + env(safe-area-inset-top, 0px));
-    padding-bottom: calc(30px + env(safe-area-inset-bottom, 0px));
+    padding: 20px;
+    padding-top: calc(20px + env(safe-area-inset-top, 0px));
+    padding-bottom: calc(20px + env(safe-area-inset-bottom, 0px));
   }
 
-  /* 🎯 SUPER ROUNDED CORNERS */
-  .poem-sheet {
-    background-color: var(--sheet-color);
-    backdrop-filter: blur(3px);
-    -webkit-backdrop-filter: blur(3px);
-    
-    border: 1px solid rgba(212, 169, 79, 0.2);
+  /* Main container for the two panels */
+  .app-container {
     width: 100%;
-    max-width: 800px;
-    
-    /* Desktop sizing */
-    min-height: 85vh;
-    max-height: 95vh; 
-    overflow-y: auto; 
-    
-    padding: 50px 60px;
-    border-radius: 48px; 
-    
-    box-shadow: 
-      0 25px 60px rgba(0,0,0,0.7), 
-      inset 0 0 120px rgba(0,0,0,0.6); 
-      
+    max-width: 600px;
     display: flex;
     flex-direction: column;
-    position: relative;
-    color: var(--text-main);
-    transition: all 0.3s ease;
+    gap: 20px; 
   }
 
-  /* Custom Scrollbar */
-  .poem-sheet::-webkit-scrollbar { width: 8px; }
-  .poem-sheet::-webkit-scrollbar-track { background: transparent; }
-  .poem-sheet::-webkit-scrollbar-thumb { background: rgba(212, 169, 79, 0.3); border-radius: 10px; }
+  /* Base style for the glass panels */
+  .glass-panel {
+    background-color: var(--glass-bg);
+    /* Increased blur to 8px so text stays readable at 55% opacity */
+    backdrop-filter: blur(8px) saturate(120%);
+    -webkit-backdrop-filter: blur(8px) saturate(120%);
+    
+    border: 1px solid var(--glass-border);
+    box-shadow: 0 15px 35px rgba(0,0,0,0.4), inset 0 0 20px rgba(0,0,0,0.2);
+    color: var(--text-main);
+    position: relative;
+  }
 
-  .poem-sheet::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: repeating-linear-gradient(45deg, rgba(255,255,255,0.01) 0px, transparent 2px, transparent 4px);
-    pointer-events: none;
-    border-radius: 48px; 
+  /* =========================================
+     1. TOP PANEL (Name + Controls)
+     ========================================= */
+  .top-panel {
+    border-radius: 28px;
+    padding: 25px 25px 20px 25px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
 
   .brand {
-    text-align: center;
     font-style: italic;
     font-size: 1.8rem;
     color: var(--gold);
-    margin-bottom: 30px;
     letter-spacing: 1px;
-    opacity: 0.9;
-    text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+    /* Stronger text shadow to pop against the transparent bg */
+    text-shadow: 0 2px 8px rgba(0,0,0,0.9); 
+    margin-bottom: 20px;
   }
 
   .controls {
+    width: 100%;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 30px;
-    padding-bottom: 20px;
-    border-bottom: 1px solid rgba(212, 169, 79, 0.2);
-    z-index: 2;
+    border-top: 1px solid rgba(212, 169, 79, 0.2);
+    padding-top: 20px;
+    flex-wrap: wrap;
+    gap: 15px;
   }
 
   select {
@@ -109,24 +99,26 @@
     border: none;
     color: var(--text-muted);
     font-family: 'Special Elite', serif;
-    font-size: 1rem;
+    font-size: 0.95rem;
     cursor: pointer;
     outline: none;
     -webkit-appearance: none;
     text-transform: uppercase;
     letter-spacing: 1px;
+    text-shadow: 0 1px 4px rgba(0,0,0,0.8);
   }
   select option { background: #2a0505; color: var(--text-main); }
 
   .lang-switch {
     display: flex;
-    gap: 15px;
+    gap: 12px;
     font-family: 'Special Elite', serif;
-    font-size: 0.95rem;
+    font-size: 0.9rem;
     letter-spacing: 1px;
+    text-shadow: 0 1px 4px rgba(0,0,0,0.8);
   }
   .lang-switch span {
-    color: rgba(244, 232, 217, 0.3);
+    color: rgba(244, 232, 217, 0.4);
     cursor: pointer;
     transition: color 0.3s;
   }
@@ -135,20 +127,30 @@
     border-bottom: 1px solid var(--gold);
   }
 
-  /* Poem Area */
+  /* =========================================
+     2. BOTTOM PANEL (Poem + Actions)
+     ========================================= */
+  .bottom-panel {
+    border-radius: 36px; 
+    padding: 35px 25px 25px 25px;
+    display: flex;
+    flex-direction: column;
+    min-height: 350px;
+  }
+
   .poem-area {
     flex: 1;
     display: flex;
     flex-direction: column;
     justify-content: center;
     text-align: center;
-    padding: 20px 0;
-    z-index: 2;
-    font-size: 1.4rem;
+    font-size: 1.3rem;
     line-height: 2;
     white-space: pre-line;
+    /* Strong text shadow for readability over the blurred bg */
+    text-shadow: 0 2px 6px rgba(0,0,0,0.9); 
     animation: fadeIn 0.6s ease;
-    text-shadow: 0 2px 4px rgba(0,0,0,0.8); 
+    padding-bottom: 25px;
   }
 
   @keyframes fadeIn {
@@ -158,51 +160,52 @@
 
   .poem-title {
     color: var(--gold);
-    font-size: 1.2rem;
+    font-size: 1.1rem;
     text-transform: uppercase;
-    letter-spacing: 3px;
+    letter-spacing: 2px;
     font-family: 'Special Elite', serif;
-    margin-bottom: 25px;
+    margin-bottom: 20px;
     display: block;
   }
 
   .poem-area .byline {
-    margin-top: 35px;
+    margin-top: 30px;
     font-style: italic;
     color: var(--gold);
-    font-size: 1.2rem;
-    opacity: 0.8;
+    font-size: 1.1rem;
+    opacity: 0.9;
   }
 
-  /* Action Area */
+  /* Actions inside the bottom panel */
   .action-area {
-    text-align: center;
-    margin-top: 20px;
-    z-index: 2;
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 12px;
+    border-top: 1px solid rgba(212, 169, 79, 0.2);
+    padding-top: 20px;
   }
 
   .gen-btn {
-    background: transparent;
-    border: 1px solid rgba(212, 169, 79, 0.4);
+    background: rgba(212, 169, 79, 0.15);
+    backdrop-filter: blur(4px);
+    border: 1px solid rgba(212, 169, 79, 0.5);
     color: var(--gold);
-    padding: 14px 40px;
+    padding: 12px 30px;
     font-family: 'Cormorant Garamond', serif;
     font-style: italic;
-    font-size: 1.3rem;
-    border-radius: 50px;
+    font-size: 1.2rem;
+    border-radius: 50px; 
     cursor: pointer;
     transition: all 0.3s ease;
     letter-spacing: 1px;
     width: 100%;
-    max-width: 300px;
+    max-width: 280px;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.8);
   }
 
   .gen-btn:hover {
-    background: rgba(212, 169, 79, 0.1);
+    background: rgba(212, 169, 79, 0.25);
     border-color: var(--gold);
     transform: translateY(-2px);
   }
@@ -215,12 +218,13 @@
     color: var(--text-muted);
     font-family: 'Cormorant Garamond', serif;
     font-style: italic;
-    font-size: 1.1rem;
+    font-size: 1rem;
     cursor: pointer;
     transition: color 0.3s;
-    opacity: 0.7;
+    opacity: 0.9;
     text-decoration: underline;
     text-decoration-color: transparent;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.8);
   }
 
   .famous-link:hover {
@@ -234,94 +238,70 @@
     border: none;
     color: var(--text-muted);
     font-family: 'Special Elite', serif;
-    font-size: 0.8rem;
+    font-size: 0.75rem;
     cursor: pointer;
-    opacity: 0.5;
+    opacity: 0.6;
     transition: opacity 0.2s;
-    margin-top: 10px;
     display: none;
+    margin-top: 5px;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.8);
   }
   .copy-btn:hover { opacity: 1; color: var(--gold); }
 
-  /* =========================================================
-     📱 MOBILE OPTIMIZATIONS (Made much smaller/shorter!)
-     ========================================================= */
-  @media (max-width: 768px) {
+  /* 📱 Mobile Adjustments */
+  @media (max-width: 600px) {
     body { padding: 15px; }
+    .app-container { gap: 15px; }
     
-    .poem-sheet { 
-      max-width: 100%; 
-      
-      /* THE FIX: Makes the sheet shrink to fit the text instead of forcing a huge height */
-      min-height: auto; 
-      max-height: 75vh; /* Prevents it from ever covering the whole screen */
-      
-      padding: 30px 20px; /* Tighter padding */
-      border-radius: 32px; /* Slightly smaller circular radius */
-    }
+    .top-panel { padding: 20px 15px 15px 15px; border-radius: 24px; }
+    .controls { flex-direction: column; gap: 15px; align-items: flex-start; padding-top: 15px;}
     
-    .poem-sheet::before { border-radius: 32px; }
-    
-    .brand { 
-      font-size: 1.4rem; 
-      margin-bottom: 15px; /* Tighter margin */
-    }
-    
-    .controls {
-      margin-bottom: 15px;
-      padding-bottom: 15px;
-    }
-
-    .poem-area { 
-      font-size: 1.15rem; 
-      line-height: 1.8; 
-      padding: 10px 0; /* Less vertical padding inside */
-    }
-    
-    .gen-btn { 
-      font-size: 1.1rem; 
-      padding: 12px 25px; 
-      margin-top: 5px;
-    }
-    
-    .action-area { 
-      margin-top: 10px; 
-      gap: 8px; /* Tighter spacing for buttons */
-    }
+    .bottom-panel { padding: 25px 15px 20px 15px; min-height: 300px; border-radius: 28px; }
+    .poem-area { font-size: 1.15rem; line-height: 1.8; }
+    .brand { font-size: 1.5rem; margin-bottom: 15px; }
+    .gen-btn { font-size: 1.1rem; padding: 12px 20px; }
   }
 </style>
 </head>
 <body>
 
-<div class="poem-sheet">
+<div class="app-container">
   
-  <div class="brand">lafzobymysha</div>
+  <!-- 🎯 TOP PANEL: Name + Controls -->
+  <div class="glass-panel top-panel">
+    <div class="brand">lafzobymysha</div>
+    
+    <div class="controls">
+      <select id="genre">
+        <option value="romance">Romance</option>
+        <option value="heartbreak">Heartbreak</option>
+        <option value="loneliness">Loneliness</option>
+        <option value="hope">Hope</option>
+        <option value="nostalgia">Nostalgia</option>
+        <option value="nature">Nature</option>
+        <option value="joy">Joy</option>
+      </select>
 
-  <div class="controls">
-    <select id="genre">
-      <option value="romance">Romance</option>
-      <option value="heartbreak">Heartbreak</option>
-      <option value="loneliness">Loneliness</option>
-      <option value="hope">Hope</option>
-      <option value="nostalgia">Nostalgia</option>
-      <option value="nature">Nature</option>
-      <option value="joy">Joy</option>
-    </select>
-
-    <div class="lang-switch" id="langSwitch">
-      <span class="active" data-lang="hi">Hinglish</span>
-      <span data-lang="en">English</span>
+      <div class="lang-switch" id="langSwitch">
+        <span class="active" data-lang="hi">Hinglish</span>
+        <span data-lang="en">English</span>
+      </div>
     </div>
   </div>
 
-  <div class="poem-area" id="poemArea">
-    <div>loading...</div>
-  </div>
+  <!-- 🎯 BOTTOM PANEL: Poem + Actions -->
+  <div class="glass-panel bottom-panel">
+    
+    <div class="poem-area" id="poemArea">
+      <div>loading...</div>
+    </div>
 
-  <div class="action-area">
-    <button class="gen-btn" id="genBtn">reveal a poem</button>
-    <button class="famous-link" id="famousBtn">or read a famous classic</button>
-    <button class="copy-btn" id="copyBtn">copy to clipboard</button>
+    <div class="action-area">
+      <button class="gen-btn" id="genBtn">reveal a poem</button>
+      <button class="famous-link" id="famousBtn">or read a famous classic</button>
+      <button class="copy-btn" id="copyBtn">copy to clipboard</button>
+    </div>
+    
   </div>
 
 </div>
